@@ -64,6 +64,7 @@ void display_book(const OrderBook& book, int n_levels = 5) {
 int main() {
     OrderBook book{"UST_10Y"};
 
+    // Resting limit orders — these live in the book until filled or cancelled.
     book.add_limit_order(Order{next_id(), Side::SELL, 99.0625, 50'000'000});
     book.add_limit_order(Order{next_id(), Side::SELL, 99.0625, 25'000'000});
     book.add_limit_order(Order{next_id(), Side::SELL, 99.0312, 75'000'000});
@@ -77,6 +78,17 @@ int main() {
     book.add_limit_order(Order{next_id(), Side::BUY,  98.9062, 35'000'000});
 
     display_book(book);
+
+    // Examples of aggressive order types — handled by the matching engine, not stored here.
+    // Shown to demonstrate how they would be constructed and dispatched.
+    Order market_buy {next_id(), Side::BUY,  0.0,     200'000'000, 0, OrderType::MARKET};
+    Order ioc_sell   {next_id(), Side::SELL, 99.0000, 100'000'000, 0, OrderType::IOC};
+    Order fok_buy    {next_id(), Side::BUY,  99.0312,  75'000'000, 0, OrderType::FOK};
+
+    std::cout << "Aggressive orders constructed (matching engine handles these):\n";
+    std::cout << "  MARKET BUY  200mm — sweep asks at any price\n";
+    std::cout << "  IOC    SELL 100mm @ 99.0000 — fill what crosses, cancel rest\n";
+    std::cout << "  FOK    BUY   75mm @ 99.0312 — fill all or cancel entirely\n\n";
 
     std::cout << "Liquidity within 5bps (ask side): "
               << book.liquidity_within_bps(Side::SELL, 5.0) << '\n';

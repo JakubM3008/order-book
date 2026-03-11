@@ -2,9 +2,10 @@
 #include <chrono>
 
 Order::Order(uint64_t order_id, Side side, double price, int quantity,
-             int64_t timestamp_ns)
+             int64_t timestamp_ns, OrderType type)
     : order_id{order_id}
     , side{side}
+    , type{type}
     , price{price}
     , quantity{quantity}
     , timestamp_ns{timestamp_ns != 0

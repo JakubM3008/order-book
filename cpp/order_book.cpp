@@ -17,11 +17,11 @@ void OrderBook::add_limit_order(Order order) {
     const Side     side  = order.side;
 
     if (side == Side::BUY) {
-        bids_.try_emplace(price, price);
-        bids_.at(price).add_order(std::move(order));
+        auto [it, _] = bids_.try_emplace(price, price);
+        it->second.add_order(std::move(order));
     } else {
-        asks_.try_emplace(price, price);
-        asks_.at(price).add_order(std::move(order));
+        auto [it, _] = asks_.try_emplace(price, price);
+        it->second.add_order(std::move(order));
     }
 
     order_map_.emplace(id, std::make_pair(price, side));
